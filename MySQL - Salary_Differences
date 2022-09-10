@@ -1,0 +1,25 @@
+-- Write a query that calculates the difference between the highest salaries found in the marketing and engineering departments.Outputs just the absolute difference in salaries.--
+
+select * from db_dept;
+select * from db_employee;
+
+-- 1) Find the highest salary for the engineering Dept -- Answer: 45787
+-- 2) Find the highes salary for the marketing Dept -- Answer: 48187
+-- 3) Find the difference between the two salaries -- Answer: 2400
+
+select distinctrow(max(salary)) as Max_Salary from db_employee join db_dept on db_employee.department_id = db_dept.id
+Where db_dept.department = 'engineering';
+
+select distinctrow(max(salary)) as Max_Salary from db_employee join db_dept on db_employee.department_id = db_dept.id
+Where db_dept.department = 'marketing';
+
+-- To find the difference I need to join this first query for engineering with the marketing query--
+-- Use the Common Table Expression--
+With eng as 
+		(select distinctrow(max(salary)) as Max_Salary from db_employee join db_dept on db_employee.department_id = db_dept.id
+		Where db_dept.department = 'engineering'),
+	mkt as
+		(select distinctrow(max(salary)) as Max_Salary from db_employee join db_dept on db_employee.department_id = db_dept.id
+		Where db_dept.department = 'marketing')
+Select abs(eng.max_salary - mkt.max_salary) as max_salary_difference from eng 
+cross join mkt; 
